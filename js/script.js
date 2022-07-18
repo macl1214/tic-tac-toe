@@ -63,10 +63,10 @@ const gameBoard = (() => {
    *   1    if current player has won
    */
   const _hasGameEnded = ((r, c) => {
-    result = _assertRow(r) || _assertCol(c) || _assertDiag();
+    result = _assertRow(r) || _assertCol(c) || _assertDiag(r, c);
 
     if (result === 0 && _moves === _maxMoves) {
-      result - 1;
+      result = -1;
     } else {
       return result;
     }
@@ -102,7 +102,7 @@ const gameBoard = (() => {
    *   1    if there is a match
    */
   const _assertCol = ((c) => {
-    let p = _board[0][1];
+    let p = _board[0][c];
 
     if (p === _board[1][c] && p === _board[2][c]) {
       return 1;
@@ -134,7 +134,10 @@ const gameBoard = (() => {
       return _assertLeftDiag();
     } else if ((r === 2 && c === 0) || (r === 0 && c === 2)) {
       return _assertRightDiag();
-    }
+    } else {
+      return 0;
+    } 
+
   });
 
   /**
