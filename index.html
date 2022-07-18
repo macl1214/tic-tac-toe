@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tic Tac Toe</title>
+
+  <!-- CSS stylesheet -->
+  <link rel="stylesheet" href="css/stylesheet.css">
+
+  <!-- Google Fonts: 'Roboto Slab' -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;900&display=swap"
+    rel="stylesheet">
 </head>
 
 <body>
@@ -17,10 +27,35 @@
     <div class="main-block">
       <div class="game-block">
         <div class="score-board">
-
+          <div class="score-header">Scoreboard</div>
+          <div class="score player1-score">0</div>
+          <div class="score player2-score">0</div>
         </div>
         <div class="game-board">
-
+          <div class="row row-1">
+            <button type="button" id="0" class="cell col-0" 
+                    data-pos="0"></button>
+            <button type="button" id="1" class="cell col-1" 
+                    data-pos="1"></button>
+            <button type="button" id="2" class="cell col-2" 
+                    data-pos="2"></button>
+          </div>
+          <div class="row row-2">
+            <button type="button" id="0" class="cell col-0" 
+                    data-pos="3"></button>
+            <button type="button" id="1" class="cell col-1" 
+                    data-pos="4"></button>
+            <button type="button" id="2" class="cell col-2" 
+                    data-pos="5"></button>
+          </div>
+          <div class="row row-3">
+            <button type="button" id="0" class="cell col-0" 
+                    data-pos="6"></button>
+            <button type="button" id="1" class="cell col-1" 
+                    data-pos="7"></button>
+            <button type="button" id="2" class="cell col-2" 
+                    data-pos="8">X</button>
+          </div>
         </div>
       </div>
     </div>
@@ -31,4 +66,5 @@
     <script type="text/javascript" src="js/script.js"></script>
   </div>
 </body>
+
 </html>

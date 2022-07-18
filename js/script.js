@@ -1,6 +1,6 @@
 /** Back-end */
 
-// Game board  set up
+// Game board set up
 const gameBoard = (() => {
   const _board = [['', '', ''],
   ['', '', ''],
@@ -272,6 +272,7 @@ const gameBoard = (() => {
   }
 })();
 
+// Player factory set up
 const Player = (piece) => {
   let _playerPiece = piece;
   let _score = 0;
@@ -294,3 +295,10 @@ const Player = (piece) => {
 
 const player1 = Player('X');
 const player2 = Player('O');
+
+// Testing
+const cells = document.querySelectorAll('.cell');
+
+cells.forEach(cell => cell.addEventListener('click', function(e) {
+  console.log(e.target.getAttribute('data-pos'));
+}));
