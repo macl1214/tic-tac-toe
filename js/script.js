@@ -2,14 +2,12 @@
 
 // Game board  set up
 const gameBoard = (() => {
-  const _board = [[' ', ' ', ' '],
-  [' ', ' ', ' '],
-  [' ', ' ', ' ']];
+  const _board = [['', '', ''],
+  ['', '', ''],
+  ['', '', '']];
   const _maxMoves = 9;
 
-  let _firstMove = 1;
-  let _curMove = 0;
-  let _moves = 0;
+  let _firstMove, _curMove, _moves;
   let _player1 = null;
   let _player2 = null;
 
@@ -19,10 +17,24 @@ const gameBoard = (() => {
   const _resetBoard = (() => {
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        _board[i][j] = ' ';
+        _board[i][j] = '';
       }
     }
   });
+
+  /**
+   * Private function that determines if the 
+   * move is a valid move
+   * 
+   * @param {*} r - Row position
+   * @param {*} c - Column position
+   * @returns:
+   *   true   if move is valid
+   *   false  if move is invalid
+   */
+  const _isValidMove = ((r, c) => {
+    return _board[r][c] === '';
+  })
 
   /**
    * Private function to update who moves next.
@@ -30,7 +42,8 @@ const gameBoard = (() => {
    * 
    * @param {*} move - move variable
    * @returns:
-   *   
+   *   1    to indicate player 1
+   *   2    to indicate player 2
    */
   const _nextMove = ((move) => {
     move = move === 1 ? 2 : 1;
@@ -159,6 +172,14 @@ const gameBoard = (() => {
 
     return 0;
   });
+
+  /**
+   * Private method used for testing board
+   * Set to public during testing.
+   */
+  const _printBoard = (() => {
+    console.table(_board);
+  });
   
   /**                     Public Methods                     **/
 
@@ -169,9 +190,9 @@ const gameBoard = (() => {
 
     _resetBoard();
 
-    _firstMove = _nextMove(_firstMove);
+    _firstMove = 1;
     _curMove = _firstMove;
-
+    _moves = 0;
   });
   
   /**
@@ -186,13 +207,13 @@ const gameBoard = (() => {
    *   1    if current player has won
    */
   const makeMove = ((pos) => {
-    let valid = _isValidMove(pos);
+    const posInt = Number.parseInt(pos);
+    const r = Math.floor(posInt / 3);
+    const c = posInt % 3;
+    let valid = _isValidMove(r, c);
 
     if (valid) {
       _moves++;            // increment move counter
-
-      let r = pos / 3;
-      let c = pos % 3;
 
       let piece = _curMove === 1 ? _player1.getPiece() : _player2.getPiece();
 
@@ -234,7 +255,8 @@ const gameBoard = (() => {
   const resetGame = (() => {
     _resetBoard();
 
-    _curMove = _nextMove();
+    _firstMove = _nextMove(_firstMove);
+    _curMove = _firstMove;
     _moves = 0;
   });
 
@@ -242,7 +264,8 @@ const gameBoard = (() => {
     initGame,
     makeMove,
     getCurMove,
-    resetGame
+    resetGame,
+    _printBoard               // Temporary
   }
 })();
 
@@ -250,7 +273,7 @@ const Player = (piece) => {
   let _playerPiece = piece;
   let _score = 0;
   
-  const getPlayerPiece = (() => _playerPiece);
+  const getPiece = (() => _playerPiece);
   const getScore = (() => _score);
 
   const hasWon = (() => {
@@ -260,7 +283,7 @@ const Player = (piece) => {
   })
 
   return {
-    getPlayerPiece,
+    getPiece,
     getScore,
     hasWon
   }
