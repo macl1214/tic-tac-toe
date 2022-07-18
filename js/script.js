@@ -167,7 +167,7 @@ const gameBoard = (() => {
     _player1 = player1;
     _player2 = player2;
 
-    _board = _resetBoard();
+    _resetBoard();
 
     _firstMove = _nextMove(_firstMove);
     _curMove = _firstMove;
@@ -185,7 +185,7 @@ const gameBoard = (() => {
    *   0    if game as not ended
    *   1    if current player has won
    */
-  const move = ((pos) => {
+  const makeMove = ((pos) => {
     let valid = _isValidMove(pos);
 
     if (valid) {
@@ -195,6 +195,8 @@ const gameBoard = (() => {
       let c = pos % 3;
 
       let piece = _curMove === 1 ? _player1.getPiece() : _player2.getPiece();
+
+      _board[r][c] = piece;
 
       let result = _hasGameEnded(r, c);
 
@@ -234,10 +236,35 @@ const gameBoard = (() => {
 
     _curMove = _nextMove();
     _moves = 0;
-  })
+  });
 
   return {
     initGame,
-
+    makeMove,
+    getCurMove,
+    resetGame
   }
 })();
+
+const Player = (piece) => {
+  let _playerPiece = piece;
+  let _score = 0;
+  
+  const getPlayerPiece = (() => _playerPiece);
+  const getScore = (() => _score);
+
+  const hasWon = (() => {
+    _score++;
+    console.log(`${this} has won!`);
+    console.log(`Now has ${_score} wins.`);
+  })
+
+  return {
+    getPlayerPiece,
+    getScore,
+    hasWon
+  }
+};
+
+const player1 = Player('X');
+const player2 = Player('O');
