@@ -57,36 +57,52 @@ table {
 /* palette link: https://coolors.co/palette/353535-3c6e71-ffffff-d9d9d9-284b63 */
 
 :root {
-  --horizontal-padding: 50px;
-
   --body-bg: #f7f7ff;
   
-  --header-height: 10vh;
+  --content-width: clamp(500px, 80%, 900px);
+
+  --header-height: 80px;
   --header-font-color: #ffffff;
   --header-bg: #3c6e71;
   --logo-font: 'Roboto Slab', Helvetica, sans-serif;
+  --logo-font-size: 2rem;
 
-  --game-width: 500px;
-  --game-height: 500px;
+  --game-width: 480px;
+  --game-height: 480px;
   --game-board-bg: #f2f4f3;
 
   --game-piece-font-family: 'Montserrat', Helvetica, sans-serif;
   --game-piece-font-size: 9rem;
+
+  --score-header-font-size: 0.9rem;
+  --score-font-size: 3rem;
+
+  --winner-font-color: #3e8914;
 }
 
 body {
   width: 100%;
   min-height: 100vh;
 
-  padding: 15px 15px 0 15px;
+  /* padding-top: 15px; */
+  /* padding-left: var(--horizontal-padding);
+  padding-right: var(--horizontal-padding); */
 
   background-color: var(--body-bg);
   user-select: none;
 }
 
+.container {
+  padding-top: 15px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .header-block {
+  width: var(--content-width);
   height: var(--header-height);
-  padding: 0 var(--horizontal-padding);
 
   background-color: var(--header-bg);
   color: var(--header-font-color);
@@ -95,18 +111,19 @@ body {
 
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .header-block .logo {
-  font-size: 2rem;
-  font-weight: 700;
+  text-align: center;
   font-family: var(--logo-font);
-
-  user-select: none;
+  font-size: var(--logo-font-size);
+  font-weight: 700;
 }
 
 .main-block {
-  padding: 20px var(--horizontal-padding);
+  width: var(--content-width);
+  padding: 15px 0;
 
   display: flex;
   align-items: center;
@@ -114,39 +131,55 @@ body {
 }
 
 .game-block {
-  width: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .score-board {
-  height: 80px;
   width: var(--game-width);
 
   display: grid;
   justify-items: center;
   align-items: center;
-  grid-template: 1fr 1fr / 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
 
   gap: 10px;
 }
 
-.score-board .score-header {
-  font-size: 30px;
+.score-board .score {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
-.score-board > .score {
-  font-size: 40px;
+.score .score-header {
+  font-size: var(--score-header-font-size);
+}
+
+.score > .score-val {
+  font-size: var(--score-font-size);
   font-weight: 700;
+}
+
+.score.winner {
+  color: var(--winner-font-color);
+  animation: blinker 0.5s linear 5;
+  /* animation-iteration-count: 1; */
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }
 
 .game-block .game-board {
   width: var(--game-width);
   height: var(--game-height);
-  margin-top: 15px;
-  padding: 10px;
+  margin: 10px 0;
 
   background-color: var(--body-bg);
   border-radius: 10px;
@@ -181,9 +214,26 @@ body {
   cursor: auto;
 }
 
+.game-board .over.cell:disabled {
+  opacity: 0.5;
+}
+
 /* Changes display of button if a move can be made */
 .game-board .cell:not([disabled]):hover {
   border: 2px solid black;
-  filter: brightness(98%);
   opacity: 0.5;
+}
+
+.reset {
+  margin-top: 5px;
+  padding: 8px 16px;
+
+  border: none;
+  border-radius: 10px;
+  font-size: 1.5rem;
+}
+
+.reset:hover {
+  filter: brightness(95%);
+  cursor: pointer;
 }

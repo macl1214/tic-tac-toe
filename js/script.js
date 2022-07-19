@@ -129,7 +129,7 @@ const gameBoard = (() => {
    */
   const _assertDiag = ((r, c) => {
     if (r === 1 && c === 1) {                           // Middle
-      return _assertLeftDiag() && _assertRightDiag();
+      return _assertLeftDiag() || _assertRightDiag();
     } else if (r === c) {
       return _assertLeftDiag();
     } else if ((r === 2 && c === 0) || (r === 0 && c === 2)) {
@@ -137,7 +137,6 @@ const gameBoard = (() => {
     } else {
       return 0;
     }
-
   });
 
   /**
@@ -257,13 +256,13 @@ const gameBoard = (() => {
    * @returns:
    *   The piece of the current player
    */
-  const getCurPlayerPiece = (() => {
+  const getCurPlayer = () => {
     if (_curMove === 1) {
-      return _player1.getPiece();
+      return _player1;
     } else {
-      return _player2.getPiece();
+      return _player2;
     }
-  })
+  };
 
   /**
    * Public method to reset game.
@@ -281,7 +280,7 @@ const gameBoard = (() => {
     initGame,
     makeMove,
     getCurMove,
-    getCurPlayerPiece,
+    getCurPlayer,
     resetGame,
     _printBoard               // Temporary
   }
@@ -311,8 +310,9 @@ const Player = (piece) => {
 const displayController = (() => {
   let _curPiece;
 
-  const _player1Score = document.querySelector('.player1-score');
-  const _player2Score = document.querySelector('.player2-score');
+  const _playerScores = document.querySelectorAll('.score');
+  const _player1Score = document.querySelector('.player1 .score-val');
+  const _player2Score = document.querySelector('.player2 .score-val');
   const _board = document.querySelector('.game-board');
   const _cells = document.querySelectorAll('.cell');
   const _reset = document.querySelector('.reset');
@@ -323,7 +323,7 @@ const displayController = (() => {
    * 
    * @param {Object} e - Event Object
    */
-  const _getUserInput = ((e) => {
+  const _getUserInput = (e) => {
     const cell = e.target;
     const pos = cell.getAttribute('data-pos');
 
@@ -331,14 +331,29 @@ const displayController = (() => {
 
     const result = gameBoard.makeMove(pos);
 
-
     if (result === 0) {
       _curPiece = _getCurPiece();
     } else {
+      if (result === 1) {
+        _updateScores();
+      }
       _toggleCellEventListeners("off");
       _disableAllCells();
     }
-  });
+  };
+
+  const _updateScores = () => {
+    const winner = gameBoard.getCurPlayer();
+    const playerNum = gameBoard.getCurMove();
+
+    if (playerNum === 1) {
+      _playerScores[playerNum - 1].classList.add('winner');
+      _player1Score.innerText = winner.getScore();
+    } else if (playerNum === 2) {
+      _playerScores[playerNum - 1].classList.add('winner');
+      _player2Score.innerText = winner.getScore();
+    }
+  }
 
   const _disableCell = (cell) => {
     if (!cell.hasAttribute('disabled')) {
@@ -350,8 +365,16 @@ const displayController = (() => {
     cell.removeAttribute('disabled');
   };
 
+  /**
+   * Private function that disables all cells.
+   * Called only when game is over, so it 
+   * also adds an 'over' class to each cell.
+   */
   const _disableAllCells = () => {
-    _cells.forEach(cell => _disableCell(cell));
+    _cells.forEach(cell => {
+      _disableCell(cell);
+      cell.classList.add('over');
+    });
   };
 
   /**
@@ -359,8 +382,14 @@ const displayController = (() => {
    * clears the innerText in each.
    */
   const _enableAllCells = () => {
-    _cells.forEach(cell => _enableCell(cell));
-    _cells.forEach(cell => cell.innerText = "");
+    _cells.forEach(cell => {
+      _enableCell(cell);
+      cell.innerText = "";
+      cell.classList.remove("over");
+
+      // if (cell.classList.contains('.over')) {
+      // }
+    });
   }
 
   const _showCurrentPiece = ((e) => {
@@ -370,7 +399,7 @@ const displayController = (() => {
   })
 
   const _getCurPiece = (() => {
-    return gameBoard.getCurPlayerPiece();
+    return gameBoard.getCurPlayer().getPiece();
   });
 
   const _clearEntry = ((e) => {
@@ -398,11 +427,18 @@ const displayController = (() => {
     _curPiece = _getCurPiece();
   };
 
+  const _removeBlinker = (e) => {
+    const score = e.target;
+
+    score.classList.remove('winner');
+  }
+
   const initGame = () => {
     _toggleCellEventListeners("on");
     _cells.forEach(cell => cell.addEventListener('click', _getUserInput));
     _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
     _reset.addEventListener('click', _startNewGame);
+    _playerScores.forEach(score => score.addEventListener('animationend', _removeBlinker));
 
     _curPiece = _getCurPiece();
   };
