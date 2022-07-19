@@ -81,6 +81,7 @@ body {
   padding: 15px 15px 0 15px;
 
   background-color: var(--body-bg);
+  user-select: none;
 }
 
 .header-block {
@@ -184,5 +185,5 @@ body {
 .game-board .cell:not([disabled]):hover {
   border: 2px solid black;
   filter: brightness(98%);
-  transition-duration: 5ms;
+  opacity: 0.5;
 }

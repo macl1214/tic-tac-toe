@@ -85,7 +85,7 @@ const gameBoard = (() => {
     let row = _board[r];
     let p = row[0]
 
-    if (p === _board[1] && p === _board[2]) {
+    if (p === row[1] && p === row[2]) {
       return 1;
     }
 
@@ -354,8 +354,13 @@ const displayController = (() => {
     _cells.forEach(cell => _disableCell(cell));
   };
 
+  /**
+   * Private function that enables all cells and
+   * clears the innerText in each.
+   */
   const _enableAllCells = () => {
     _cells.forEach(cell => _enableCell(cell));
+    _cells.forEach(cell => cell.innerText = "");
   }
 
   const _showCurrentPiece = ((e) => {
@@ -374,7 +379,7 @@ const displayController = (() => {
     cell.innerText = '';
   });
 
-  const _toggleCellEventListeners = ((status) => {
+  const _toggleCellEventListeners = (status) => {
     if (status === "on") {
       _cells.forEach(cell =>
             cell.addEventListener('mouseover', _showCurrentPiece));
@@ -382,26 +387,30 @@ const displayController = (() => {
       _cells.forEach(cell =>
             cell.removeEventListener('mouseover', _showCurrentPiece));
     }
-  })
-  
-  _toggleCellEventListeners("on");
-    _cells.forEach(cell => cell.addEventListener('click', _getUserInput));
-    _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
+  };
+
+  const _startNewGame = () => {
+    gameBoard.resetGame();
+    
+    _enableAllCells();
+    _toggleCellEventListeners("on");
+
+    _curPiece = _getCurPiece();
+  };
 
   const initGame = () => {
     _toggleCellEventListeners("on");
     _cells.forEach(cell => cell.addEventListener('click', _getUserInput));
     _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
+    _reset.addEventListener('click', _startNewGame);
 
     _curPiece = _getCurPiece();
-  }
+  };
 
   return {
     initGame
   }
 })();
-
-
 
 // Testing
 window.onload = () => {
