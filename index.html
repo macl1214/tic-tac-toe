@@ -10,11 +10,14 @@
   <!-- CSS stylesheet -->
   <link rel="stylesheet" href="css/stylesheet.css">
 
-  <!-- Google Fonts: 'Roboto Slab' -->
+  <!-- Google Fonts: 'Roboto Slab', 'Montserrat' -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;900&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Roboto+Slab:wght@400;500;600;700&display=swap" 
+        rel="stylesheet">
+
+  <!-- Font Awesome Kit -->
+  <script src="https://kit.fontawesome.com/d4478b4067.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -27,28 +30,29 @@
     <div class="main-block">
       <div class="game-block">
         <div class="score-board">
-          <div class="score-header">Scoreboard</div>
+          <div class="score-header player1">Player 1</div>
+          <div class="score-header player2">Player 2</div>
           <div class="score player1-score">0</div>
           <div class="score player2-score">0</div>
         </div>
         <div class="game-board">
-          <button type="button" id="0" class="cell col-0" 
+          <button type="button" class="cell col-0" 
                   data-pos="0"></button>
-          <button type="button" id="1" class="cell col-1" 
+          <button type="button" class="cell col-1" 
                   data-pos="1"></button>
-          <button type="button" id="2" class="cell col-2" 
+          <button type="button" class="cell col-2" 
                   data-pos="2"></button>
-          <button type="button" id="0" class="cell col-0" 
+          <button type="button" class="cell col-0" 
                   data-pos="3"></button>
-          <button type="button" id="1" class="cell col-1" 
-                  data-pos="4"></button>
-          <button type="button" id="2" class="cell col-2" 
-                  data-pos="5"></button>
-          <button type="button" id="0" class="cell col-0" 
+          <button type="button" class="cell col-1" 
+                  data-pos="4">O</button>
+          <button type="button" class="cell col-2" 
+                  data-pos="5">X</button>
+          <button type="button" class="cell col-0" 
                   data-pos="6"></button>
-          <button type="button" id="1" class="cell col-1" 
-                  data-pos="7"></button>
-          <button type="button" id="2" class="cell col-2" 
+          <button type="button" class="cell col-1" 
+                  data-pos="7">O</button>
+          <button type="button" class="cell col-2" 
                   data-pos="8">X</button>
         </div>
       </div>
