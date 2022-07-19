@@ -136,7 +136,7 @@ const gameBoard = (() => {
       return _assertRightDiag();
     } else {
       return 0;
-    } 
+    }
 
   });
 
@@ -183,7 +183,7 @@ const gameBoard = (() => {
   const _printBoard = (() => {
     console.table(_board);
   });
-  
+
   /**                     Public Methods                     **/
 
   // Method to be called when gameBoard is initialized
@@ -197,7 +197,7 @@ const gameBoard = (() => {
     _curMove = _firstMove;
     _moves = 0;
   });
-  
+
   /**
    * Public method used to place a piece on the board.
    * Checks if the position is valid before placing 
@@ -252,6 +252,20 @@ const gameBoard = (() => {
   });
 
   /**
+   * Public method used to get the current piece
+   * 
+   * @returns:
+   *   The piece of the current player
+   */
+  const getCurPlayerPiece = (() => {
+    if (_curMove === 1) {
+      return _player1.getPiece();
+    } else {
+      return _player2.getPiece();
+    }
+  })
+
+  /**
    * Public method to reset game.
    * Resets board and move counters
    */
@@ -267,6 +281,7 @@ const gameBoard = (() => {
     initGame,
     makeMove,
     getCurMove,
+    getCurPlayerPiece,
     resetGame,
     _printBoard               // Temporary
   }
@@ -276,7 +291,7 @@ const gameBoard = (() => {
 const Player = (piece) => {
   let _playerPiece = piece;
   let _score = 0;
-  
+
   const getPiece = (() => _playerPiece);
   const getScore = (() => _score);
 
@@ -293,12 +308,105 @@ const Player = (piece) => {
   }
 };
 
-const player1 = Player('X');
-const player2 = Player('O');
+const displayController = (() => {
+  let _curPiece;
+
+  const _player1Score = document.querySelector('.player1-score');
+  const _player2Score = document.querySelector('.player2-score');
+  const _board = document.querySelector('.game-board');
+  const _cells = document.querySelectorAll('.cell');
+  const _reset = document.querySelector('.reset');
+
+  /**
+   * Private function that gets the id of the
+   * cell pressed and attempts to make a move
+   * 
+   * @param {Object} e - Event Object
+   */
+  const _getUserInput = ((e) => {
+    const cell = e.target;
+    const pos = cell.getAttribute('data-pos');
+
+    _disableCell(cell);
+
+    const result = gameBoard.makeMove(pos);
+
+
+    if (result === 0) {
+      _curPiece = _getCurPiece();
+    } else {
+      _toggleCellEventListeners("off");
+      _disableAllCells();
+    }
+  });
+
+  const _disableCell = (cell) => {
+    if (!cell.hasAttribute('disabled')) {
+      cell.setAttribute('disabled', '');
+    }
+  };
+
+  const _enableCell = (cell) => {
+    cell.removeAttribute('disabled');
+  };
+
+  const _disableAllCells = () => {
+    _cells.forEach(cell => _disableCell(cell));
+  };
+
+  const _enableAllCells = () => {
+    _cells.forEach(cell => _enableCell(cell));
+  }
+
+  const _showCurrentPiece = ((e) => {
+    const cell = e.target;
+
+    cell.innerText = _curPiece;
+  })
+
+  const _getCurPiece = (() => {
+    return gameBoard.getCurPlayerPiece();
+  });
+
+  const _clearEntry = ((e) => {
+    const cell = e.target;
+
+    cell.innerText = '';
+  });
+
+  const _toggleCellEventListeners = ((status) => {
+    if (status === "on") {
+      _cells.forEach(cell =>
+            cell.addEventListener('mouseover', _showCurrentPiece));
+    } else {
+      _cells.forEach(cell =>
+            cell.removeEventListener('mouseover', _showCurrentPiece));
+    }
+  })
+  
+  _toggleCellEventListeners("on");
+    _cells.forEach(cell => cell.addEventListener('click', _getUserInput));
+    _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
+
+  const initGame = () => {
+    _toggleCellEventListeners("on");
+    _cells.forEach(cell => cell.addEventListener('click', _getUserInput));
+    _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
+
+    _curPiece = _getCurPiece();
+  }
+
+  return {
+    initGame
+  }
+})();
+
+
 
 // Testing
-const cells = document.querySelectorAll('.cell');
-
-cells.forEach(cell => cell.addEventListener('click', function(e) {
-  console.log(e.target.getAttribute('data-pos'));
-}));
+window.onload = () => {
+  const player1 = Player('X');
+  const player2 = Player('O');
+  gameBoard.initGame(player1, player2);
+  displayController.initGame();
+};

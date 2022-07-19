@@ -175,7 +175,13 @@ body {
   line-height: var(--game-piece-font-size);
 }
 
-.game-board .cell:hover {
+.game-board .cell:disabled {
+  color: black;
+  cursor: auto;
+}
+
+/* Changes display of button if a move can be made */
+.game-board .cell:not([disabled]):hover {
   border: 2px solid black;
   filter: brightness(98%);
   transition-duration: 5ms;
