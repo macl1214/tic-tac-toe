@@ -172,6 +172,10 @@ body {
   opacity: 0.7;
 }
 
+.score-board .game-type > object {
+  width: 100%;
+}
+
 .score .score-header {
   font-size: var(--score-header-font-size);
 }

@@ -311,9 +311,9 @@ const displayController = (() => {
   let _curPiece;
 
   const _playerScores = document.querySelectorAll('.score');
+  const _gameType = document.querySelectorAll('.game-type');
   const _player1Score = document.querySelector('.player1 .score-val');
   const _player2Score = document.querySelector('.player2 .score-val');
-  const _board = document.querySelector('.game-board');
   const _cells = document.querySelectorAll('.cell');
   const _reset = document.querySelector('.reset');
 
