@@ -268,7 +268,7 @@ const gameBoard = (() => {
    * Public method to reset game.
    * Resets board and move counters
    */
-  const resetGame = (() => {
+  const restartGame = (() => {
     _resetBoard();
 
     _firstMove = _nextMove(_firstMove);
@@ -281,7 +281,7 @@ const gameBoard = (() => {
     makeMove,
     getCurMove,
     getCurPlayer,
-    resetGame,
+    restartGame,
     _printBoard               // Temporary
   }
 })();
@@ -309,13 +309,14 @@ const Player = (piece) => {
 
 const displayController = (() => {
   let _curPiece;
+  let _onePlayer = false;
 
   const _playerScores = document.querySelectorAll('.score');
   const _gameType = document.querySelector('.game-type');
   const _player1Score = document.querySelector('.player1 .score-val');
   const _player2Score = document.querySelector('.player2 .score-val');
   const _cells = document.querySelectorAll('.cell');
-  const _reset = document.querySelector('.reset');
+  const _restart = document.querySelector('.reset');
 
   /**
    * Private function that gets the id of the
@@ -419,7 +420,7 @@ const displayController = (() => {
   };
 
   const _startNewGame = () => {
-    gameBoard.resetGame();
+    gameBoard.restartGame();
     
     _enableAllCells();
     _toggleCellEventListeners("on");
@@ -441,6 +442,9 @@ const displayController = (() => {
     for (let mode of modes) {
       _toggleShow(mode);
     }
+    
+    _onePlayer = !_onePlayer;
+    
   }
 
   const _removeBlinker = (e) => {
@@ -453,7 +457,7 @@ const displayController = (() => {
     _toggleCellEventListeners("on");
     _cells.forEach(cell => cell.addEventListener('click', _getUserInput));
     _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
-    _reset.addEventListener('click', _startNewGame);
+    _restart.addEventListener('click', _startNewGame);
     _gameType.addEventListener('click', _changeGameType);
     _playerScores.forEach(score => score.addEventListener('animationend', _removeBlinker));
 
