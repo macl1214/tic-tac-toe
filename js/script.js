@@ -311,7 +311,7 @@ const displayController = (() => {
   let _curPiece;
 
   const _playerScores = document.querySelectorAll('.score');
-  const _gameType = document.querySelectorAll('.game-type');
+  const _gameType = document.querySelector('.game-type');
   const _player1Score = document.querySelector('.player1 .score-val');
   const _player2Score = document.querySelector('.player2 .score-val');
   const _cells = document.querySelectorAll('.cell');
@@ -427,6 +427,22 @@ const displayController = (() => {
     _curPiece = _getCurPiece();
   };
 
+  const _toggleShow = (mode) => {
+    if (mode.classList.contains('hide')) {
+      mode.classList.remove('hide');
+    } else {
+      mode.classList.add('hide');
+    }
+  }
+
+  const _changeGameType = () => {
+    const modes =_gameType.children;
+
+    for (let mode of modes) {
+      _toggleShow(mode);
+    }
+  }
+
   const _removeBlinker = (e) => {
     const score = e.target;
 
@@ -438,6 +454,7 @@ const displayController = (() => {
     _cells.forEach(cell => cell.addEventListener('click', _getUserInput));
     _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
     _reset.addEventListener('click', _startNewGame);
+    _gameType.addEventListener('click', _changeGameType);
     _playerScores.forEach(score => score.addEventListener('animationend', _removeBlinker));
 
     _curPiece = _getCurPiece();
