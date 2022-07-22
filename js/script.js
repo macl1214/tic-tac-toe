@@ -1,10 +1,8 @@
-/** Back-end */
-
 // Game board set up
 const gameBoard = (() => {
   const _board = [['', '', ''],
-  ['', '', ''],
-  ['', '', '']];
+                  ['', '', ''],
+                  ['', '', '']];
   const _maxMoves = 9;
 
   let _firstMove, _curMove, _moves;
@@ -175,14 +173,6 @@ const gameBoard = (() => {
     return 0;
   });
 
-  /**
-   * Private method used for testing board
-   * Set to public during testing.
-   */
-  const _printBoard = (() => {
-    console.table(_board);
-  });
-
   /**                     Public Methods                     **/
 
   // Method to be called when gameBoard is initialized
@@ -251,6 +241,21 @@ const gameBoard = (() => {
   });
 
   /**
+   * Public function that changes the
+   * name of either player
+   * 
+   * @param {String} player - 1 for _player1, 2 for _player2
+   * @param {String} name   - New name
+   */
+  const changePlayerName = (player, name) => {
+    if (player === 1) {
+      _player1.changeName(name);
+    } else {
+      _player2.changeName(name);
+    }
+  };
+
+  /**
    * Public method used to get the current piece
    * 
    * @returns:
@@ -281,26 +286,32 @@ const gameBoard = (() => {
     makeMove,
     getCurMove,
     getCurPlayer,
-    restartGame,
-    _printBoard               // Temporary
+    changePlayerName,
+    restartGame
   }
 })();
 
 // Player factory set up
-const Player = (piece) => {
+const Player = (piece, name) => {
   let _playerPiece = piece;
+  let _name = name
   let _score = 0;
+
+  const changeName = (name) => {
+    _name = name;
+  }
 
   const getPiece = (() => _playerPiece);
   const getScore = (() => _score);
 
-  const hasWon = (() => {
+  const hasWon = () => {
     _score++;
-    console.log(`${this} has won!`);
+    console.log(`${_name} has won!`);
     console.log(`Now has ${_score} wins.`);
-  })
+  };
 
   return {
+    changeName,
     getPiece,
     getScore,
     hasWon
@@ -313,6 +324,8 @@ const displayController = (() => {
 
   const _playerScores = document.querySelectorAll('.score');
   const _gameType = document.querySelector('.game-type');
+  const _nameHeaders = document.querySelectorAll('.name-header');
+  const _nameInputs = document.querySelectorAll('.name-input');
   const _player1Score = document.querySelector('.player1 .score-val');
   const _player2Score = document.querySelector('.player2 .score-val');
   const _cells = document.querySelectorAll('.cell');
@@ -428,6 +441,56 @@ const displayController = (() => {
     _curPiece = _getCurPiece();
   };
 
+  const _openNameInput = (e) => {
+    e.stopPropagation(); 
+
+    const target = e.target;
+    const parent = target.parentNode;
+    const input = parent.querySelector('input');
+
+    _toggleShow(target);
+    _toggleShow(input);
+
+    if (parent.classList.contains('player1')) {
+
+    }
+  };
+
+  const _changeName = (e) => {
+    const input = e.target;
+    const nameHeader = input.parentNode.querySelector('.name-header');
+    const curName = nameHeader.innerText;
+    const name = input.value.trim();
+    const playerId = input.id;
+    const player = playerId === "player1-name" ? 1 : 2;
+    
+    // Check if name is not empty or if it's not the same
+    if (name !== "" || name !== curName) {
+      gameBoard.changePlayerName(player, name);
+
+      input.value = "";
+      nameHeader.innerText = name;
+
+      _toggleShow(input);
+      _toggleShow(nameHeader);
+    }
+ 
+  }
+
+  const _closeNameInput = (e) => {
+    for (let player of _playerScores) {
+      const nameInput = player.querySelector('.name-input');
+      const playerName = player.querySelector('.name-header');
+
+      const inputHidden = nameInput.classList.contains('hide');
+
+      if (!inputHidden) {
+        _toggleShow(nameInput);
+        _toggleShow(playerName);
+      }
+    } 
+  }
+
   const _toggleShow = (mode) => {
     if (mode.classList.contains('hide')) {
       mode.classList.remove('hide');
@@ -444,7 +507,6 @@ const displayController = (() => {
     }
     
     _onePlayer = !_onePlayer;
-    
   }
 
   const _removeBlinker = (e) => {
@@ -454,7 +516,23 @@ const displayController = (() => {
   }
 
   const initGame = () => {
+    // Used to close name input field
+    document.addEventListener('click', _closeNameInput);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === "Escape") {
+        _closeNameInput();
+      }
+    });
+    
+    // Used to not close when clicking inside field
+    _nameInputs.forEach(input => input.addEventListener('click', e => e.stopPropagation()));
+    
     _toggleCellEventListeners("on");
+    _nameHeaders.forEach(playerName => playerName.addEventListener('click', _openNameInput));
+    _nameInputs.forEach(input => input.addEventListener('keydown', function(e) {
+      if (e.key === "Enter") 
+        _changeName(e);
+    }));
     _cells.forEach(cell => cell.addEventListener('click', _getUserInput));
     _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
     _restart.addEventListener('click', _startNewGame);
@@ -471,8 +549,8 @@ const displayController = (() => {
 
 // Testing
 window.onload = () => {
-  const player1 = Player('X');
-  const player2 = Player('O');
+  const player1 = Player('X', 'Player 1');
+  const player2 = Player('O', 'Player 2');
   gameBoard.initGame(player1, player2);
   displayController.initGame();
 };
