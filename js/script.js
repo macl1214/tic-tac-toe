@@ -322,12 +322,11 @@ const displayController = (() => {
   let _curPiece;
   let _onePlayer = false;
 
-  const _playerScores = document.querySelectorAll('.score');
+  const _playerScoreCards = document.querySelectorAll('.score');
   const _gameType = document.querySelector('.game-type');
   const _nameHeaders = document.querySelectorAll('.name-header');
   const _nameInputs = document.querySelectorAll('.name-input');
-  const _player1Score = document.querySelector('.player1 .score-val');
-  const _player2Score = document.querySelector('.player2 .score-val');
+  const _playerScores = document.querySelectorAll('.score-val');
   const _cells = document.querySelectorAll('.cell');
   const _restart = document.querySelector('.reset');
 
@@ -360,13 +359,9 @@ const displayController = (() => {
     const winner = gameBoard.getCurPlayer();
     const playerNum = gameBoard.getCurMove();
 
-    if (playerNum === 1) {
-      _playerScores[playerNum - 1].classList.add('winner');
-      _player1Score.innerText = winner.getScore();
-    } else if (playerNum === 2) {
-      _playerScores[playerNum - 1].classList.add('winner');
-      _player2Score.innerText = winner.getScore();
-    }
+    
+    _playerScoreCards[playerNum - 1].classList.add('winner');
+    _playerScores[playerNum - 1].innerText = winner.getScore();
   }
 
   const _disableCell = (cell) => {
@@ -478,7 +473,7 @@ const displayController = (() => {
   }
 
   const _closeNameInput = (e) => {
-    for (let player of _playerScores) {
+    for (let player of _playerScoreCards) {
       const nameInput = player.querySelector('.name-input');
       const playerName = player.querySelector('.name-header');
 
@@ -500,8 +495,37 @@ const displayController = (() => {
     }
   }
 
+  const _countdown = (score) => {
+    let startTimestamp = null;
+    let curScore = Number.parseInt(score.innerText);
+    let duration = 500;
+
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      score.innerHTML = Math.floor(progress * (0 - curScore) + curScore);
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+
+    window.requestAnimationFrame(step);
+  }
+
+  const _resetScores = () => {
+    for (let score of _playerScores) {
+      _countdown(score);
+    }
+  }
+
+  const _resetGame = () => {
+    _resetScores();
+  }
+
   const _changeGameType = () => {
     const modes =_gameType.children;
+
+    _resetGame();
 
     for (let mode of modes) {
       _toggleShow(mode);
@@ -529,6 +553,7 @@ const displayController = (() => {
     _nameInputs.forEach(input => input.addEventListener('click', e => e.stopPropagation()));
     
     _toggleCellEventListeners("on");
+
     _nameHeaders.forEach(playerName => playerName.addEventListener('click', _openNameInput));
     _nameInputs.forEach(input => input.addEventListener('keydown', function(e) {
       if (e.key === "Enter") 
@@ -538,7 +563,7 @@ const displayController = (() => {
     _cells.forEach(cell => cell.addEventListener('mouseout', _clearEntry));
     _restart.addEventListener('click', _startNewGame);
     _gameType.addEventListener('click', _changeGameType);
-    _playerScores.forEach(score => score.addEventListener('animationend', _removeBlinker));
+    _playerScoreCards.forEach(score => score.addEventListener('animationend', _removeBlinker));
 
     _curPiece = _getCurPiece();
   };

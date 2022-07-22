@@ -75,6 +75,7 @@ table {
   --game-piece-font-family: 'Montserrat', Helvetica, sans-serif;
   --game-piece-font-size: 9rem;
 
+  --name-header-font-family: 'Courier New', Courier, monospace;
   --name-header-font-size: 0.9rem;
   --score-font-size: 3rem;
 
@@ -157,7 +158,7 @@ body {
   align-items: center;
   gap: 5px;
 
-  font-family:'Courier New', Courier, monospace;
+  font-family: var(--name-header-font-family);
 }
 
 .score-board .game-type {
