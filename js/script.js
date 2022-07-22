@@ -485,6 +485,7 @@ const displayController = (() => {
       const inputHidden = nameInput.classList.contains('hide');
 
       if (!inputHidden) {
+        nameInput.value = "";
         _toggleShow(nameInput);
         _toggleShow(playerName);
       }
